@@ -34,31 +34,53 @@ def inject_css():
 # Aplica o tema escuro
 inject_css()
 
+# Seleção de idioma
+language = st.radio("Escolha o idioma / Choose the language", ["Português", "English"])
+
+# Dicionário de traduções
+translations = {
+    "title": {"Português": "Pomodoro Timer", "English": "Pomodoro Timer"},
+    "work_time": {"Português": "Tempo de trabalho (minutos)", "English": "Work time (minutes)"},
+    "break_time": {"Português": "Tempo de pausa (minutos)", "English": "Break time (minutes)"},
+    "save_button": {"Português": "Salvar", "English": "Save"},
+    "save_success": {"Português": "Configurações salvas com sucesso!", "English": "Settings saved successfully!"},
+    "tasks_subheader": {"Português": "Tarefas", "English": "Tasks"},
+    "new_task": {"Português": "Nova tarefa", "English": "New task"},
+    "add_task": {"Português": "Adicionar tarefa", "English": "Add task"},
+    "add_success": {"Português": "Tarefa adicionada!", "English": "Task added!"},
+    "add_error": {"Português": "Digite uma tarefa antes de adicionar!", "English": "Please enter a task before adding!"},
+    "no_tasks": {"Português": "Nenhuma tarefa adicionada ainda.", "English": "No tasks added yet."},
+    "current_task": {"Português": "Tarefa atual: {}", "English": "Current task: {}"},
+    "start_button": {"Português": "Iniciar", "English": "Start"},
+    "pause_button": {"Português": "Pausar", "English": "Pause"},
+    "restart_button": {"Português": "Reiniciar", "English": "Restart"},
+    "cycle_end": {"Português": "Fim do ciclo! Hora de descansar.", "English": "Cycle complete! Time to rest."},
+}
+
 # Título
-st.title("Pomodoro Timer")
+st.title(translations["title"][language])
 
 # Configurações de tempo
-st.sidebar.subheader("Configurações")
-work_time = st.sidebar.number_input("Tempo de trabalho (minutos)", min_value=1, max_value=60, value=25)
-break_time = st.sidebar.number_input("Tempo de pausa (minutos)", min_value=1, max_value=30, value=5)
-if st.sidebar.button("Salvar"):
+st.sidebar.subheader(translations["tasks_subheader"][language])
+work_time = st.sidebar.number_input(translations["work_time"][language], min_value=1, max_value=60, value=25)
+break_time = st.sidebar.number_input(translations["break_time"][language], min_value=1, max_value=30, value=5)
+if st.sidebar.button(translations["save_button"][language]):
     st.session_state.time_left = work_time * 60
     st.session_state.break_time = break_time * 60
-    st.success("Configurações salvas com sucesso!")
+    st.success(translations["save_success"][language])
 
 # Adicionar tarefas
-st.sidebar.subheader("Tarefas")
-new_task = st.sidebar.text_input("Nova tarefa")
-if st.sidebar.button("Adicionar tarefa"):
+new_task = st.sidebar.text_input(translations["new_task"][language])
+if st.sidebar.button(translations["add_task"][language]):
     if new_task:
         st.session_state.tasks.append(new_task)
         st.session_state.current_task = new_task if st.session_state.current_task is None else st.session_state.current_task
-        st.sidebar.success("Tarefa adicionada!")
+        st.sidebar.success(translations["add_success"][language])
     else:
-        st.sidebar.error("Digite uma tarefa antes de adicionar!")
+        st.sidebar.error(translations["add_error"][language])
 
 # Exibir tarefas
-st.subheader("Tarefas")
+st.subheader(translations["tasks_subheader"][language])
 if st.session_state.tasks:
     for i, task in enumerate(st.session_state.tasks):
         col1, col2 = st.columns([8, 2])
@@ -69,11 +91,11 @@ if st.session_state.tasks:
                 st.session_state.current_task = st.session_state.tasks[0] if st.session_state.tasks else None
             st.rerun()
 else:
-    st.info("Nenhuma tarefa adicionada ainda.")
+    st.info(translations["no_tasks"][language])
 
 # Exibir tarefa atual
 if st.session_state.current_task:
-    st.subheader(f"Tarefa atual: {st.session_state.current_task}")
+    st.subheader(translations["current_task"][language].format(st.session_state.current_task))
 
 # Cronômetro
 time_display = st.empty()
@@ -84,11 +106,11 @@ time_display.markdown(
 
 # Controles do cronômetro
 col1, col2, col3 = st.columns(3)
-if col1.button("Iniciar"):
+if col1.button(translations["start_button"][language]):
     st.session_state.timer_running = True
-if col2.button("Pausar"):
+if col2.button(translations["pause_button"][language]):
     st.session_state.timer_running = False
-if col3.button("Reiniciar"):
+if col3.button(translations["restart_button"][language]):
     st.session_state.timer_running = False
     st.session_state.time_left = work_time * 60
 
@@ -106,4 +128,4 @@ if st.session_state.timer_running:
 # Mensagens ao finalizar
 if st.session_state.time_left == 0 and st.session_state.timer_running:
     st.session_state.timer_running = False
-    st.success("Fim do ciclo! Hora de descansar.")
+    st.success(translations["cycle_end"][language])
