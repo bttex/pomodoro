@@ -2,7 +2,7 @@ import time
 import streamlit as st
 
 # Configuração da página
-st.set_page_config(page_title="Pomodoro Timer", layout="centered")
+st.set_page_config(page_title="Pomodoro Timer", layout="centered", page_icon="assets\icons8-aplicativo-florestal.svg")
 
 # Inicializando estados
 if "timer_running" not in st.session_state:
